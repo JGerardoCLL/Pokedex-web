@@ -1,9 +1,10 @@
-import { CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 interface Pokemon {
+    id: number;
     name: string;
     type: string;
 }
@@ -22,30 +23,37 @@ export class PokedexComponent{
     pageSize = 20;
 
     pokemon: Pokemon[] = [
-    { name: 'Bulbasaur', type: 'Grass' },
-    { name: 'Ivysaur', type: 'Grass' },
-    { name: 'Venusaur', type: 'Grass' },
-    { name: 'Charmander', type: 'Fire' },
-    { name: 'Charmeleon', type: 'Fire' },
-    { name: 'Charizard', type: 'Fire' },
-    { name: 'Squirtle', type: 'Water' },
-    { name: 'Wartortle', type: 'Water' },
-    { name: 'Blastoise', type: 'Water' },
-    { name: 'Pikachu', type: 'Electric' },
-    { name: 'Raichu', type: 'Electric' },
-    { name: 'Bulbasaur', type: 'Grass' },
-    { name: 'Ivysaur', type: 'Grass' },
-    { name: 'Venusaur', type: 'Grass' },
-    { name: 'Charmander', type: 'Fire' },
-    { name: 'Charmeleon', type: 'Fire' },
-    { name: 'Charizard', type: 'Fire' },
-    { name: 'Squirtle', type: 'Water' },
-    { name: 'Wartortle', type: 'Water' },
-    { name: 'Blastoise', type: 'Water' },
-    { name: 'Pikachu', type: 'Electric' },
-    { name: 'Raichu', type: 'Electric' },
-    { name: 'Jigglypuff', type: 'Normal' }
-  ];
+      { id: 1, name: 'Bulbasaur', type: 'Grass' },
+      { id: 2, name: 'Ivysaur', type: 'Grass' },
+      { id: 3, name: 'Venusaur', type: 'Grass' },
+      { id: 4, name: 'Charmander', type: 'Fire' },
+      { id: 5, name: 'Charmeleon', type: 'Fire' },
+      { id: 6, name: 'Charizard', type: 'Fire' },
+      { id: 7, name: 'Squirtle', type: 'Water' },
+      { id: 8, name: 'Wartortle', type: 'Water' },
+      { id: 9, name: 'Blastoise', type: 'Water' },
+      { id: 10, name: 'Caterpie', type: 'Bug' },
+      { id: 11, name: 'Metapod', type: 'Bug' },
+      { id: 12, name: 'Butterfree', type: 'Bug' },
+      { id: 13, name: 'Weedle', type: 'Poison' },
+      { id: 14, name: 'Kakuna', type: 'Poison' },
+      { id: 15, name: 'Beedrill', type: 'Poison' },
+      { id: 16, name: 'Pidgey', type: 'Flying' },
+      { id: 17, name: 'Pidgeotto', type: 'Flying' },
+      { id: 18, name: 'Pidgeot', type: 'Flying' },
+      { id: 19, name: 'Rattata', type: 'Normal' },
+      { id: 20, name: 'Raticate', type: 'Normal' },
+      { id: 21, name: 'Spearow', type: 'Flying' },
+      { id: 22, name: 'Fearow', type: 'Flying' },
+      { id: 23, name: 'Ekans', type: 'Poison' },
+      { id: 24, name: 'Arbok', type: 'Poison' },
+      { id: 25, name: 'Pikachu', type: 'Electric' },
+      { id: 26, name: 'Raichu', type: 'Electric' },
+      { id: 27, name: 'Sandshrew', type: 'Ground' },
+      { id: 28, name: 'Sandslash', type: 'Ground' },
+      { id: 29, name: 'Nidoran', type: 'Poison' },
+      { id: 30, name: 'Nidorina', type: 'Poison' }
+    ];
 
   get types(): string[] {
     return [...new Set(this.pokemon.map(p => p.type))];
@@ -56,8 +64,12 @@ export class PokedexComponent{
 
     return this.pokemon.filter((poke) => {
         const matchesName = poke.name.toLowerCase().includes(search);
+        const matchesNumber = poke.id.toString().includes(this.searchTerm);
+        const formattedNumber = poke.id.toString().padStart(3, '0');
+
         const matchesType = this.selectedType ? poke.type === this.selectedType : true;
-        return matchesName && matchesType;
+        const pokeNumber = matchesNumber || formattedNumber.includes(this.searchTerm);
+        return (matchesName || pokeNumber) && matchesType;
     });
 
   }

@@ -28,13 +28,24 @@
     </section>
 
     <section class="pokdx__content">
-      <article
+      <a
         class="pokdx__card"
-        *ngFor="let poke of paginatedPokemon">
+        *ngFor="let poke of paginatedPokemon"
+        [routerLink]="['/detalles', poke.id]">
+        <img
+          class="pokdx__image"
+          [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + poke.id + '.png'"
+          [alt]="poke.name"
+        />
 
+        <p class="pokdx__number">#{{ poke.id | number: '3.0-0' }}</p>
         <h2 class="pokdx__name">{{ poke.name }}</h2>
-        <p class="pokdx__type">Tipo: {{ poke.type }}</p>
-      </article>
+        <span
+          class="pokdx__type"
+          [ngClass]="'pokdx__type--' + poke.type.toLowerCase()">
+          {{ poke.type }}
+        </span>
+      </a>
     </section>
 
     <p *ngIf="filteredPokemon.length === 0">

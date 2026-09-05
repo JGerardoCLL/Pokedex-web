@@ -1,0 +1,23 @@
+<main class="pokemon-detail">
+  <header class="pokemon-detail__header">
+    <a class="pokemon-detail__back" routerLink="/">‹ Volver</a>
+
+    <div class="pokemon-detail__heading">
+      <span>#{{ pokemonId | number: '3.0-0' }}</span>
+      <h1>{{ pokemonName }}</h1>
+    </div>
+
+    <button
+      type="button"
+      class="pokemon-detail__favorite"
+      routerLink="/favoritos"
+      aria-label="Abrir favoritos">
+      ♥
+    </button>
+  </header>
+
+	<img [src]="imageUrl" [alt]="pokemonName" />
+	
+	
+	<p>Tipo: {{ pokemonType }}</p>
+</main>

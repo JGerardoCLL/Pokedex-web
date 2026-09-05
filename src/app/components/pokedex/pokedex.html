@@ -1,0 +1,68 @@
+<main class="pokdx">
+  <div class="pokdx__container">
+    <header class="pokdx__header">
+      <h1 class="pokdx__title">Pokédex</h1>
+      <button type="button" class="pokdx__button" routerLink="/favoritos">Favoritos ♥</button>
+    </header>
+
+    <section class="pokdx__filters">
+      <input
+        id="search"
+        class="pokdx__search"
+        type="search"
+        placeholder="Buscar por nombre o número..."
+        [(ngModel)]="searchTerm"
+        (input)="search()"
+      />
+
+      <select
+        id="type"
+        class="pokdx__type-select"
+        [(ngModel)]="selectedType"
+        (change)="filterByType()">
+        <option value="">Tipo: Todos</option>
+        <option *ngFor="let type of types" [value]="type">
+          {{ type }}
+        </option>
+      </select>
+    </section>
+
+    <section class="pokdx__content">
+      <article
+        class="pokdx__card"
+        *ngFor="let poke of paginatedPokemon">
+
+        <h2 class="pokdx__name">{{ poke.name }}</h2>
+        <p class="pokdx__type">Tipo: {{ poke.type }}</p>
+      </article>
+    </section>
+
+    <p *ngIf="filteredPokemon.length === 0">
+      No se encontraron Pokémon.
+    </p>
+
+    <nav
+      class="pokdx__pagination"
+      *ngIf="totalPages > 1"
+      aria-label="Paginación">
+
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1">
+        Anterior
+      </button>
+
+      <span>
+        Página {{ currentPage }} de {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages">
+        Siguiente
+      </button>
+    </nav>
+  </div>
+</main>

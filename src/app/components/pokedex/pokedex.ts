@@ -1,15 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute,RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PokemonService } from '../../services/pokemon.service';
-
-interface Pokemon {
-    id: number;
-    name: string;
-    image: string;
-    types: string[];
-}
+import { Pokemon, PokemonPage } from '../../models/pokemon.model';
 
 @Component({
     selector: 'app-pokedex',
@@ -24,25 +18,32 @@ export class PokedexComponent{
     selectedType = '';
     currentPage = 1;
     pageSize = 20;
+    pokemonPage?: PokemonPage;
+    private hasLoaded = false;
 
 
-    constructor(private pokemonService: PokemonService, private route: ActivatedRoute) {
-      this.loadPokemons();
-
+    constructor(
+      private pokemonService: PokemonService,
+      private route: ActivatedRoute
+    ) {
       this.route.queryParams.subscribe(params => {
         const page = Number(params['page']);
-        if (page > 0) {
-          this.currentPage = page;
+        this.currentPage = page > 0 ? page : 1;
+        if (!this.hasLoaded) {
+          this.loadPokemons();
         }
       });
     }
 
-    pokemon: Pokemon[] = [];
+    get pokemon(): Pokemon[] {
+      return this.pokemonPage?.results ?? [];
+    }
 
     loadPokemons(): void {
-    this.pokemonService.getPokemons(40, 0).subscribe({
-      next: (pokemon) => {
-        this.pokemon = pokemon;
+    this.pokemonService.getPokemonIndex().subscribe({
+      next: (page) => {
+        this.pokemonPage = page;
+        this.hasLoaded = true;
       },
       error: (error) => {
         console.error('Error al cargar los Pokémon:', error);
@@ -75,9 +76,8 @@ export class PokedexComponent{
   }
 
   get paginatedPokemon(): Pokemon[] {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    return this.filteredPokemon.slice(startIndex, endIndex);
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredPokemon.slice(start, start + this.pageSize);
   }
 
   get totalPages(): number {

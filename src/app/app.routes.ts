@@ -6,5 +6,5 @@ import { DetallesComponent } from './components/detalles pokemon/detalles';
 export const routes: Routes = [
     { path: '', component: PokedexComponent },
     { path: 'favoritos', component: FavoritosComponent },
-    { path: 'detalles/:id', component: DetallesComponent }
+    { path: 'pokemon/:id', component: DetallesComponent }
 ];

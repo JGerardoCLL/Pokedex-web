@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Observable, switchMap } from 'rxjs';
+import { PokemonService } from '../../services/pokemon.service';
+import { PokemonDetail } from '../../models/pokemon.model';
 
 @Component({
     selector: 'app-detalles',
@@ -9,40 +12,25 @@ import { CommonModule } from '@angular/common';
     templateUrl: './detalles.html',
 })
 export class DetallesComponent {
-    title = 'Detalles de pokemones';
-    pokemonId: number;
-    pokemonName: string;
-    pokemonType: string;
+    pokemon$: Observable<PokemonDetail>;
+    pokemonId!: number;
+    returnPage = 1;
 
-    constructor(private route: ActivatedRoute) {
-        this.pokemonId = Number(this.route.snapshot.paramMap.get('id'));
-        this.pokemonName = this.getPokemonName(this.pokemonId);
-        this.pokemonType = this.getPokemonType(this.pokemonId);
+    constructor(
+      private route: ActivatedRoute,
+      private pokemonService: PokemonService
+    ) {
+      this.pokemon$ = this.route.paramMap.pipe(
+        switchMap((params) => {
+          this.pokemonId = Number(params.get('id'));
+          return this.pokemonService.getPokemonById(this.pokemonId);
+        })
+      );
+
+      this.route.queryParamMap.subscribe((params) => {
+        this.returnPage = Number(params.get('page')) || 1;
+      });
     }
 
-    get imageUrl(): string {
-        return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${this.pokemonId}.png`;
-    }
 
-    private getPokemonName(id: number): string {
-        const names: Record<number, string> = {
-            1: 'Bulbasaur', 2: 'Ivysaur', 3: 'Venusaur',
-            4: 'Charmander', 5: 'Charmeleon', 6: 'Charizard',
-            7: 'Squirtle', 8: 'Wartortle', 9: 'Blastoise',
-            25: 'Pikachu', 26: 'Raichu'
-        };
-
-        return names[id] ?? 'Pokémon';
-    }
-
-    private getPokemonType(id: number): string {
-        const types: Record<number, string> = {
-            1: 'Grass', 2: 'Grass', 3: 'Grass',
-            4: 'Fire', 5: 'Fire', 6: 'Fire',
-            7: 'Water', 8: 'Water', 9: 'Water',
-            25: 'Electric', 26: 'Electric'
-        };
-
-        return types[id] ?? 'Unknown';
-    }
 }

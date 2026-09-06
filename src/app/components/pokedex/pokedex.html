@@ -31,7 +31,8 @@
       <a
         class="pokdx__card"
         *ngFor="let poke of paginatedPokemon"
-        [routerLink]="['/detalles', poke.id]">
+        [routerLink]="['/pokemon', poke.id]"
+        [queryParams]="{ page: currentPage }">
         <img
           class="pokdx__image"
           [src]="poke.image"

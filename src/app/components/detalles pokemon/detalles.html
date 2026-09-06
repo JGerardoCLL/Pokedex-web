@@ -20,8 +20,10 @@
   </header>
 
   <section class="pokemon-detail__content">
+    <section class="pokemon_image">
     <img [src]="pokemon.artwork" [alt]="pokemon.name" />
-
+    </section>
+    <section class="details_pokemon">
     <p>Altura: {{ pokemon.height / 10 }} m</p>
     <p>Peso: {{ pokemon.weight / 10 }} kg</p>
 
@@ -47,7 +49,8 @@
         {{ stat.name | titlecase }}: {{ stat.baseStat }}
       </li>
     </ul>
-
+    </section>
+  </section>
     <nav class="pokemon-detail__navigation">
   <a
     *ngIf="pokemonId > 1"
@@ -68,5 +71,5 @@
     Siguiente ›
   </a>
 </nav>
-  </section>
+  
 </main>

@@ -34,16 +34,23 @@
         [routerLink]="['/detalles', poke.id]">
         <img
           class="pokdx__image"
-          [src]="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + poke.id + '.png'"
+          [src]="poke.image"
           [alt]="poke.name"
         />
 
-        <p class="pokdx__number">#{{ poke.id | number: '3.0-0' }}</p>
-        <h2 class="pokdx__name">{{ poke.name }}</h2>
+        <p class="pokdx__number">
+          #{{ poke.id | number: '3.0-0' }}
+        </p>
+        <h2 class="pokdx__name">
+          {{ poke.name | titlecase }}
+        </h2>
+
+        <!-- Etiquetas de tipos de Pokémon -->
         <span
+          *ngFor="let type of poke.types"
           class="pokdx__type"
-          [ngClass]="'pokdx__type--' + poke.type.toLowerCase()">
-          {{ poke.type }}
+          [ngClass]="'pokdx__type--' + type">
+          {{ type }}
         </span>
       </a>
     </section>

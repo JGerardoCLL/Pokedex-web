@@ -1,10 +1,13 @@
-<main class="pokemon-detail">
+<main class="pokemon-detail" *ngIf="pokemon$ | async as pokemon">
   <header class="pokemon-detail__header">
-    <a class="pokemon-detail__back" routerLink="/">‹ Volver</a>
+    <a class="pokemon-detail__back" routerLink="/"
+       [queryParams]="{ page: returnPage }">
+      ‹ Volver
+    </a>
 
     <div class="pokemon-detail__heading">
-      <span>#{{ pokemonId | number: '3.0-0' }}</span>
-      <h1>{{ pokemonName }}</h1>
+      <span>#{{ pokemon.id | number: '3.0-0' }}</span>
+      <h1>{{ pokemon.name | titlecase }}</h1>
     </div>
 
     <button
@@ -16,8 +19,54 @@
     </button>
   </header>
 
-	<img [src]="imageUrl" [alt]="pokemonName" />
-	
-	
-	<p>Tipo: {{ pokemonType }}</p>
+  <section class="pokemon-detail__content">
+    <img [src]="pokemon.artwork" [alt]="pokemon.name" />
+
+    <p>Altura: {{ pokemon.height / 10 }} m</p>
+    <p>Peso: {{ pokemon.weight / 10 }} kg</p>
+
+    <h2>Tipos</h2>
+    <span *ngFor="let type of pokemon.types">
+      {{ type | titlecase }}
+    </span>
+
+    <h2>Habilidades</h2>
+    <ul>
+      <li *ngFor="let ability of pokemon.abilities">
+        {{ ability.name | titlecase }}
+        <span *ngIf="ability.isHidden">(oculta)</span>
+      </li>
+    </ul>
+
+    <h2>Descripción</h2>
+    <p>{{ pokemon.description }}</p>
+
+    <h2>Estadísticas</h2>
+    <ul>
+      <li *ngFor="let stat of pokemon.stats">
+        {{ stat.name | titlecase }}: {{ stat.baseStat }}
+      </li>
+    </ul>
+
+    <nav class="pokemon-detail__navigation">
+  <a
+    *ngIf="pokemonId > 1"
+    [routerLink]="['/pokemon', pokemonId - 1]"
+    [queryParams]="{ page: returnPage }">
+    ‹ Anterior
+  </a>
+
+  <a
+    routerLink="/"
+    [queryParams]="{ page: returnPage }">
+    Volver a la lista
+  </a>
+
+  <a
+    [routerLink]="['/pokemon', pokemonId + 1]"
+    [queryParams]="{ page: returnPage }">
+    Siguiente ›
+  </a>
+</nav>
+  </section>
 </main>

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import {
   Pokemon,
+  PokemonPage,
   PokemonDetail,
   PokemonListResponse
 } from '../models/pokemon.model';
@@ -15,7 +16,7 @@ export class PokemonService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://pokeapi.co/api/v2/';
 
-  getPokemons(limit = 40, offset = 0): Observable<Pokemon[]> {
+  getPokemons(limit = 20, offset = 0): Observable<PokemonPage> {
     return this.http.get<PokemonListResponse>(
       `${this.apiUrl}/pokemon?limit=${limit}&offset=${offset}`
     ).pipe(
@@ -25,7 +26,14 @@ export class PokemonService {
           const id = this.getPokemonId(pokemon.url);
           return this.getPokemonById(id);
         });
-        return forkJoin(requests);
+        return forkJoin(requests).pipe(
+          map((pokemonDetails) => ({
+            count: response.count,
+            next: response.next,
+            previous: response.previous,
+            results: pokemonDetails
+          }))
+        );
       })
     );
   }

@@ -15,6 +15,54 @@ import {
 export class PokemonService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://pokeapi.co/api/v2/';
+  private readonly pokemonTypes = [
+    'normal', 'fire', 'water', 'electric', 'grass', 'ice',
+    'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
+    'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
+  ];
+
+  getPokemonIndex(): Observable<PokemonPage> {
+    return forkJoin({
+      list: this.http.get<PokemonListResponse>(
+        `${this.apiUrl}/pokemon?limit=1302&offset=0`
+      ),
+      types: forkJoin(
+        this.pokemonTypes.map((type) =>
+          this.http.get<{
+            pokemon: { pokemon: { name: string; url: string } }[]
+          }>(`${this.apiUrl}/type/${type}`)
+        )
+      )
+    }).pipe(
+      map(({ list, types }) => {
+        const typesByPokemon = new Map<number, string[]>();
+
+        types.forEach((typeResponse, typeIndex) => {
+          typeResponse.pokemon.forEach(({ pokemon }) => {
+            const id = this.getPokemonId(pokemon.url);
+            const pokemonTypes = typesByPokemon.get(id) ?? [];
+            pokemonTypes.push(this.pokemonTypes[typeIndex]);
+            typesByPokemon.set(id, pokemonTypes);
+          });
+        });
+
+        return {
+          count: list.count,
+          next: null,
+          previous: null,
+          results: list.results.map((pokemon) => {
+            const id = this.getPokemonId(pokemon.url);
+            return {
+              id,
+              name: pokemon.name,
+              types: typesByPokemon.get(id) ?? [],
+              image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+            };
+          })
+        };
+      })
+    );
+  }
 
   getPokemons(limit = 20, offset = 0): Observable<PokemonPage> {
     return this.http.get<PokemonListResponse>(

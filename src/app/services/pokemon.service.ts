@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, forkJoin, switchMap } from 'rxjs';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import {
   Pokemon,
+  PokemonDetail,
   PokemonListResponse
 } from '../models/pokemon.model';
 
@@ -14,7 +15,7 @@ export class PokemonService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://pokeapi.co/api/v2/';
 
-  getPokemons(limit = 20, offset = 0): Observable<Pokemon[]> {
+  getPokemons(limit = 40, offset = 0): Observable<Pokemon[]> {
     return this.http.get<PokemonListResponse>(
       `${this.apiUrl}/pokemon?limit=${limit}&offset=${offset}`
     ).pipe(
@@ -34,18 +35,53 @@ export class PokemonService {
   return Number(parts[parts.length - 1]);
   }
 
-  getPokemonById(id: number): Observable<Pokemon> {
+  getPokemonById(id: number): Observable<PokemonDetail> {
     return this.http
       .get<any>(`${this.apiUrl}/pokemon/${id}`)
       .pipe(
-        map((pokemon) => ({
+        switchMap((pokemon) =>
+          forkJoin({
+            species: this.http.get<any>(
+              `${this.apiUrl}/pokemon-species/${id}`
+            ),
+            pokemon: of(pokemon)
+          })
+        ),
+        map(({ pokemon, species }) => ({
           id: pokemon.id,
           name: pokemon.name,
-          image: pokemon.sprites.other['official-artwork'].front_default,
+          height: pokemon.height,
+          weight: pokemon.weight,
           types: pokemon.types.map(
             (item: { type: { name: string } }) => item.type.name
-          )
+          ),
+          abilities: pokemon.abilities.map(
+            (item: { ability: { name: string }; is_hidden: boolean }) => ({
+              name: item.ability.name,
+              isHidden: item.is_hidden
+            })
+          ),
+          description: this.getSpanishDescription(species),
+          stats: pokemon.stats.map(
+            (item: { base_stat: number; stat: { name: string } }) => ({
+              name: item.stat.name,
+              baseStat: item.base_stat
+            })
+          ),
+          image: pokemon.sprites.front_default,
+          artwork: pokemon.sprites.other['official-artwork'].front_default
         }))
       );
+  }
+
+  private getSpanishDescription(species: any): string {
+    const flavorTextEntry = species.flavor_text_entries.find(
+      (entry: { language: { name: string } }) =>
+        entry.language.name === 'es'
+    );
+
+    return flavorTextEntry
+      ? flavorTextEntry.flavor_text.replace(/[\n\f]/g, ' ')
+      : '';
   }
 }

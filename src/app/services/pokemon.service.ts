@@ -12,7 +12,7 @@ import {
 
 export class PokemonService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://pokeapi.co/api/v2';
+  private readonly apiUrl = 'https://pokeapi.co/api/v2/';
 
   getPokemons(limit = 20, offset = 0): Observable<Pokemon[]> {
     return this.http.get<PokemonListResponse>(

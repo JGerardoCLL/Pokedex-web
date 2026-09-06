@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute,RouterLink } from '@angular/router';
 import { PokemonService } from '../../services/pokemon.service';
 
 interface Pokemon {
@@ -26,14 +26,21 @@ export class PokedexComponent{
     pageSize = 20;
 
 
-    constructor(private pokemonService: PokemonService) {
+    constructor(private pokemonService: PokemonService, private route: ActivatedRoute) {
       this.loadPokemons();
+
+      this.route.queryParams.subscribe(params => {
+        const page = Number(params['page']);
+        if (page > 0) {
+          this.currentPage = page;
+        }
+      });
     }
 
     pokemon: Pokemon[] = [];
 
     loadPokemons(): void {
-    this.pokemonService.getPokemons(20, 0).subscribe({
+    this.pokemonService.getPokemons(40, 0).subscribe({
       next: (pokemon) => {
         this.pokemon = pokemon;
       },

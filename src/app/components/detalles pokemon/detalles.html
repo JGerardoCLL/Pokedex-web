@@ -49,8 +49,8 @@
     </div>
 
     <div class="pokemon-detail__info">
-    <p>Altura: {{ pokemon.height / 10 }} m</p>
-    <p>Peso: {{ pokemon.weight / 10 }} kg</p>
+    <p>Altura: {{ pokemon.height | number: '1.1-1' }} m</p>
+    <p>Peso: {{ pokemon.weight | number: '1.1-1' }} kg</p>
     </div>
 
     <div class="pokemon-detail__abilities">

@@ -145,8 +145,8 @@ export class PokemonService {
     return {
       id: pokemon.id,
       name: pokemon.name,
-      height: pokemon.height,
-      weight: pokemon.weight,
+      height: Number((pokemon.height / 10).toFixed(1)),
+      weight: Number((pokemon.weight / 10).toFixed(1)),
       types: pokemon.types.map((item) => item.type.name),
       abilities: pokemon.abilities.map((item) => ({
         name: item.ability.name,

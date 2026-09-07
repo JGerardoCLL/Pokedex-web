@@ -47,6 +47,18 @@ export interface PokemonListItem {
   url: string;
 }
 
+export interface PokemonTypeListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: PokemonTypeSummary[];
+}
+
+export interface PokemonTypeSummary {
+  name: string;
+  url: string;
+}
+
 export interface PokemonTypeResponse {
   pokemon: {
     pokemon: PokemonListItem;
@@ -94,4 +106,7 @@ export interface PokemonSpeciesResponse {
       name: string;
     };
   }[];
+  evolution_chain?: {
+    url: string;
+  };
 }

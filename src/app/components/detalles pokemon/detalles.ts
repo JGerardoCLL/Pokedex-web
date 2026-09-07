@@ -16,7 +16,6 @@ import { EstadosComponent } from '../estados de interfaz/estados';
 export class DetallesComponent {
     pokemon?: PokemonDetail;
     pokemonId!: number;
-    returnPage = 1;
     estado: 'loading' | 'error' | 'ready' = 'loading';
     mensajeEstado = '';
 
@@ -30,9 +29,6 @@ export class DetallesComponent {
         this.loadPokemon();
       });
 
-      this.route.queryParamMap.subscribe((params) => {
-        this.returnPage = Number(params.get('page')) || 1;
-      });
     }
 
     loadPokemon(): void {

@@ -8,7 +8,28 @@
     </a>
   </header>
 
-  <section class="pokdx__content favoritos__content">
+  <app-estados
+    *ngIf="estado === 'loading'"
+    estado="loading">
+  </app-estados>
+
+  <app-estados
+    *ngIf="estado === 'error'"
+    estado="error"
+    [mensaje]="mensajeEstado"
+    [mostrarReintentar]="true"
+    (reintentar)="loadFavorites()">
+  </app-estados>
+
+  <app-estados
+    *ngIf="estado === 'ready' && favoritePokemon.length === 0"
+    estado="empty"
+    mensaje="Estado vacio:Aun no tienes favoritos. Explora la Pokédex.">
+  </app-estados>
+
+  <section
+    *ngIf="estado === 'ready' && favoritePokemon.length > 0"
+    class="pokdx__content favoritos__content">
   <article
     class="favoritos__card"
     *ngFor="let poke of favoritePokemon">
@@ -50,9 +71,4 @@
     </button>
   </article>
 </section>
-    <p 
-        class="favoritos__empty"
-        *ngIf="favoritePokemon.length === 0">
-        Estado vacio:"Aun no tienes favoritos. Explora la Pokédex."
-    </p>
 </main>

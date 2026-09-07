@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { PokemonService } from '../../services/pokemon.service';
 import { Pokemon, PokemonPage } from '../../models/pokemon.model';
 import { FavoritesService } from '../../services/favorites.service';
+import { PaginationService } from '../../services/pagination.service';
 import { EstadosComponent } from '../estados de interfaz/estados';
 
 @Component({
@@ -21,23 +22,18 @@ export class PokedexComponent{
     currentPage = 1;
     pageSize = 20;
     pokemonPage?: PokemonPage;
-    private hasLoaded = false;
     estado: 'loading' | 'error' | 'ready' = 'loading';
     mensajeEstado = '';
 
 
     constructor(
       private pokemonService: PokemonService,
-      private route: ActivatedRoute,
-      private favoritesService: FavoritesService
+      private favoritesService: FavoritesService,
+      private paginationService: PaginationService
     ) {
-      this.route.queryParams.subscribe(params => {
-        const page = Number(params['page']);
-        this.currentPage = page > 0 ? page : 1;
-        if (!this.hasLoaded) {
-          this.loadPokemons();
-        }
-      });
+      //recuperar la página actual del servicio de paginación
+      this.currentPage = this.paginationService.getPage();
+      this.loadPokemons();
     }
 
     get pokemon(): Pokemon[] {
@@ -55,7 +51,6 @@ export class PokedexComponent{
       this.pokemonService.getPokemonIndex().subscribe({
       next: (page) => {
         this.pokemonPage = page;
-        this.hasLoaded = true;
         this.estado = 'ready';
       },
       error: (error) => {
@@ -98,24 +93,28 @@ export class PokedexComponent{
   get totalPages(): number {
     return Math.ceil(this.filteredPokemon.length / this.pageSize);
   }
-
+  // filtros
   search(): void {
     this.currentPage = 1;
+    this.paginationService.resetPage();
   }
 
   filterByType(): void {
     this.currentPage = 1;
+    this.paginationService.resetPage();
   }
-
+  // Paginación
   previousPage(): void {
     if (this.currentPage > 1) {
         this.currentPage--;
+      this.paginationService.setPage(this.currentPage);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
         this.currentPage++;
+      this.paginationService.setPage(this.currentPage);
     }
   }
 

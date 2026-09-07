@@ -1,21 +1,21 @@
 <main class="pokemon-detail" *ngIf="pokemon$ | async as pokemon">
-  <header class="pokemon-detail__header">
+  <header class="pokemon__header">
     <a class="pokemon-detail__back" routerLink="/"
        [queryParams]="{ page: returnPage }">
       ‹ Volver
     </a>
 
-    <div class="pokemon-detail__heading">
+    <div class="pokemon__heading">
       <span>#{{ pokemon.id | number: '3.0-0' }}</span>
       <h1>{{ pokemon.name | titlecase }}</h1>
     </div>
 
     <button
       type="button"
-      class="pokemon-detail__favorite"
-      routerLink="/favoritos"
-      aria-label="Abrir favoritos">
-      ♥
+      class="pokdx__favorite-button"
+      (click)="toggleFavorite(pokemon.id, $event)">
+      {{ isFavorite(pokemon.id)
+      ? '🖤' : '🤍' }}
     </button>
   </header>
 
@@ -23,33 +23,54 @@
     <section class="pokemon_image">
     <img [src]="pokemon.artwork" [alt]="pokemon.name" />
     </section>
+
     <section class="details_pokemon">
+
+    <div class="pokemon-detail__types">
+      
+    <!--tipos de pokemon-->
+    <span *ngFor="let type of pokemon.types"
+    class="pokdx__type"
+    [ngClass]="'pokdx__type--' + type">
+      {{ type }}
+    </span>
+    </div>
+
+    <div class="pokemon-detail__info">
     <p>Altura: {{ pokemon.height / 10 }} m</p>
     <p>Peso: {{ pokemon.weight / 10 }} kg</p>
+    </div>
 
-    <h2>Tipos</h2>
-    <span *ngFor="let type of pokemon.types">
-      {{ type | titlecase }}
-    </span>
+    <div class="pokemon-detail__abilities">
+      <h2>Habilidades</h2>
+      <ul class="pokemon-detail__list">
+        <li *ngFor="let ability of pokemon.abilities">
+          {{ ability.name | titlecase }}
+          <span *ngIf="ability.isHidden">(oculta)</span>
+        </li>
+      </ul>
+    </div>
 
-    <h2>Habilidades</h2>
-    <ul>
-      <li *ngFor="let ability of pokemon.abilities">
-        {{ ability.name | titlecase }}
-        <span *ngIf="ability.isHidden">(oculta)</span>
-      </li>
-    </ul>
-
-    <h2>Descripción</h2>
-    <p>{{ pokemon.description }}</p>
-
-    <h2>Estadísticas</h2>
-    <ul>
-      <li *ngFor="let stat of pokemon.stats">
-        {{ stat.name | titlecase }}: {{ stat.baseStat }}
-      </li>
-    </ul>
+    <div class="pokemon-detail__description">
+      <h2>Descripción</h2>
+      <p>{{ pokemon.description }}</p>
+    </div>
     </section>
+
+    <section class="pokemon-detail__stats">
+      <h2>Estadísticas</h2>
+      <div class="pokemon-detail__stat" *ngFor="let stat of pokemon.stats">
+        <span class="pokemon-detail__stat-name">{{ stat.name | titlecase }}</span>
+        <span class="pokemon-detail__stat-track">
+          <span
+            class="pokemon-detail__stat-bar"
+            [style.width.%]="stat.baseStat">
+          </span>
+        </span>
+        <span class="pokemon-detail__stat-value">{{ stat.baseStat }}</span>
+      </div>
+    </section>
+
   </section>
     <nav class="pokemon-detail__navigation">
   <a

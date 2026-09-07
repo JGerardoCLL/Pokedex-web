@@ -1,59 +1,94 @@
-# PokedexWeb
+# Pokédex Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+Aplicación web desarrollada con Angular para consultar Pokémon mediante
+[PokeAPI](https://pokeapi.co/), buscar por nombre o número, filtrar por tipo,
+ver detalles y gestionar una lista de favoritos.
+## Requisitos
 
-## Development server
+- Node.js `20.20.2` (versión utilizada durante el desarrollo).
+- npm `12.0.2`.
+- Angular `19.2.x` y Angular CLI `19.2.27`.
 
-To start a local development server, run:
+Las versiones de Angular y sus dependencias están definidas en `package.json`.
 
-```bash
-ng serve
-```
+## Instalación y ejecución
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Instala las dependencias desde la carpeta raíz del proyecto:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+Inicia el servidor de desarrollo:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Abre [http://localhost:4200](http://localhost:4200). Angular recarga los
+cambios automáticamente mientras el servidor está activo.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Otros comandos disponibles:
 
 ```bash
-ng test
+npm run build   # Compila la aplicación en dist/
+npm run watch   # Compila y observa cambios en desarrollo
+npm test        # Ejecuta las pruebas unitarias con Karma
 ```
 
-## Running end-to-end tests
+## Estructura principal
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```text
+src/
+├── main.ts                         Punto de entrada de Angular
+├── styles.css                      Estilos globales
+└── app/
+		├── app.config.ts               Configuración y HttpClient
+		├── app.routes.ts               Rutas, incluida la ruta comodín
+		├── components/
+		│   ├── pokedex/                Lista, filtros y paginación
+		│   ├── detalles pokemon/       Vista de detalle y favoritos
+		│   ├── favoritos/              Lista persistente de favoritos
+		│   └── estados de interfaz/    Carga, error, vacío y no encontrado
+		├── models/                     Interfaces de los datos de Pokémon
+		└── services/
+				├── pokemon.service.ts      Consultas a PokeAPI
+				├── favorites.service.ts    Persistencia de favoritos
+				└── pagination.service.ts   Persistencia de la página actual
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Decisiones técnicas
 
-## Additional Resources
+- **Componentes standalone:** se usa el enfoque de Angular moderno para que
+	cada componente declare explícitamente sus dependencias.
+- **PokeAPI:** proporciona los datos de Pokémon sin mantener un backend propio.
+	El servicio centraliza las peticiones y adapta la respuesta al modelo local.
+- **Índice global para filtros:** se carga un catálogo con nombres, números,
+	imágenes y tipos para que los filtros no se limiten a los 20 elementos de la
+	página visible.
+- **Favoritos con `localStorage`:** se guardan los IDs, no copias completas de los Pokémon. Así los favoritos sobreviven a recargas y al cierre del navegador.
+- **Paginación con `sessionStorage`:** la página actual se conserva sin añadir
+	`page` a la URL y se reinicia al buscar o cambiar el tipo.
+- **Componente `EstadosComponent`:** centraliza los estados de carga, error,
+	lista vacía y ruta inexistente. Cada pantalla controla su petición y puede
+	solicitar un reintento.
+- **Ruta comodín:** `**` muestra el estado de página no encontrada para URLs
+	que no coinciden con ninguna ruta definida.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Pendiente y mejoras futuras
+
+- Añadir pruebas unitarias para servicios, filtros, favoritos y estados de interfaz.
+- Incorporar pruebas end-to-end para navegación, reintentos y persistencia.
+- Mejorar el manejo de errores específicos de PokeAPI y diferenciar errores de
+	red, respuestas inválidas y Pokémon inexistentes.
+- Añadir paginación o carga progresiva más eficiente para catálogos muy grandes.
+- Mejorar accesibilidad con etiquetas, foco visible, mensajes para lectores de
+	pantalla y navegación completa mediante teclado.
+- Separar los textos visibles en un sistema de traducciones y mostrar nombres
+	de tipos y estadísticas en español.
+- Añadir una estrategia de caché para reducir peticiones repetidas a PokeAPI.
+
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+

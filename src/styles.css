@@ -385,6 +385,16 @@ body {
   background-color: #a91f1f;
 }
 
+.favoritos__empty {
+  padding: 48px 20px;
+  color: #222222;
+  background-color: #44444498;
+  border: 3px dashed #cbd0d6;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
 @media (max-width: 600px) {
   .pokemon-detail__content {
     grid-template-columns: 1fr;

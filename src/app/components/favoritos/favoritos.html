@@ -50,7 +50,9 @@
     </button>
   </article>
 </section>
-    <p *ngIf="favoritePokemon.length === 0">
-        No tienes Pokémon favoritos.
+    <p 
+        class="favoritos__empty"
+        *ngIf="favoritePokemon.length === 0">
+        Estado vacio:"Aun no tienes favoritos. Explora la Pokédex."
     </p>
 </main>

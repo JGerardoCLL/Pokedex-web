@@ -25,9 +25,11 @@ export class FavoritosComponent {
         this.favoritePokemon = page.results.filter((pokemon) =>
           favoriteIds.includes(pokemon.id)
         );
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error al cargar favoritos:', error);
+        this.loading = false;
       }
     });
   }
@@ -43,4 +45,6 @@ export class FavoritosComponent {
   get favoriteCount(): number {
     return this.favoritesService.getCount();
   }
+
+  loading = true;
 }

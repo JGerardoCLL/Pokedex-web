@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PokemonService } from '../../services/pokemon.service';
 import { Pokemon, PokemonPage } from '../../models/pokemon.model';
+import { FavoritesService } from '../../services/favorites.service';
 
 @Component({
     selector: 'app-pokedex',
@@ -24,7 +25,8 @@ export class PokedexComponent{
 
     constructor(
       private pokemonService: PokemonService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private favoritesService: FavoritesService
     ) {
       this.route.queryParams.subscribe(params => {
         const page = Number(params['page']);
@@ -37,6 +39,10 @@ export class PokedexComponent{
 
     get pokemon(): Pokemon[] {
       return this.pokemonPage?.results ?? [];
+    }
+
+    get favoriteCount(): number {
+      return this.favoritesService.getCount();
     }
 
     loadPokemons(): void {

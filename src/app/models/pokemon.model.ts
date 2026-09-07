@@ -1,15 +1,15 @@
-export interface PokemonPage{
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: Pokemon[];
+export interface PokemonPage {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Pokemon[];
 }
 
 export interface Pokemon {
-    id: number;
-    name: string;
-    image: string;
-    types: string[];
+  id: number;
+  name: string;
+  image: string;
+  types: string[];
 }
 
 export interface PokemonAbility {
@@ -70,23 +70,17 @@ export interface PokemonApiResponse {
   name: string;
   height: number;
   weight: number;
-  types: {
-    type: {
-      name: string;
-    };
-  }[];
-  abilities: {
-    ability: {
-      name: string;
-    };
+  types: Array<{
+    type: { name: string };
+  }>;
+  abilities: Array<{
+    ability: { name: string };
     is_hidden: boolean;
-  }[];
-  stats: {
+  }>;
+  stats: Array<{
     base_stat: number;
-    stat: {
-      name: string;
-    };
-  }[];
+    stat: { name: string };
+  }>;
   sprites: PokemonSprites;
 }
 
@@ -100,12 +94,10 @@ export interface PokemonSprites {
 }
 
 export interface PokemonSpeciesResponse {
-  flavor_text_entries: {
+  flavor_text_entries: Array<{
     flavor_text: string;
-    language: {
-      name: string;
-    };
-  }[];
+    language: { name: string };
+  }>;
   evolution_chain?: {
     url: string;
   };

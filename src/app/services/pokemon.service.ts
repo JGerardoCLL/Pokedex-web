@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import {
-  Pokemon,
   PokemonPage,
   PokemonDetail,
   PokemonListResponse,
@@ -17,7 +16,6 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-
 export class PokemonService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://pokeapi.co/api/v2';
@@ -29,9 +27,7 @@ export class PokemonService {
 
   getPokemonIndex(): Observable<PokemonPage> {
     return forkJoin({
-      list: this.http.get<PokemonListResponse>(
-        `${this.apiUrl}/pokemon?limit=1302&offset=0`
-      ),
+      list: this.http.get<PokemonListResponse>(`${this.apiUrl}/pokemon?limit=1302&offset=0`),
       types: forkJoin(
         this.pokemonTypes.map((type) =>
           this.http.get<PokemonTypeResponse>(`${this.apiUrl}/type/${type}`)
@@ -44,9 +40,9 @@ export class PokemonService {
         types.forEach((typeResponse, typeIndex) => {
           typeResponse.pokemon.forEach(({ pokemon }) => {
             const id = this.getPokemonId(pokemon.url);
-            const pokemonTypes = typesByPokemon.get(id) ?? [];
-            pokemonTypes.push(this.pokemonTypes[typeIndex]);
-            typesByPokemon.set(id, pokemonTypes);
+            const currentTypes = typesByPokemon.get(id) ?? [];
+            currentTypes.push(this.pokemonTypes[typeIndex]);
+            typesByPokemon.set(id, currentTypes);
           });
         });
 
@@ -74,10 +70,10 @@ export class PokemonService {
     ).pipe(
       switchMap((response) => {
         const requests = response.results.map((pokemon) => {
-
           const id = this.getPokemonId(pokemon.url);
           return this.getPokemonById(id);
         });
+
         return forkJoin(requests).pipe(
           map((pokemonDetails) => ({
             count: response.count,
@@ -90,16 +86,13 @@ export class PokemonService {
     );
   }
 
-  private getPokemonId(url: string): number {
-  const parts = url.split('/').filter(Boolean);
-  return Number(parts[parts.length - 1]);
-  }
-
   getPokemonTypes(): Observable<string[]> {
     return this.http
       .get<PokemonTypeListResponse>(`${this.apiUrl}/type?limit=100&offset=0`)
       .pipe(
-        map((response) => response.results.map((type: PokemonTypeSummary) => type.name))
+        map((response) =>
+          response.results.map((type: PokemonTypeSummary) => type.name)
+        )
       );
   }
 
@@ -127,18 +120,6 @@ export class PokemonService {
             );
         })
       );
-  }
-
-  private extractEvolutionNames(
-    chain: PokemonEvolutionChainResponse['chain']
-  ): string[] {
-    const names: string[] = [chain.species.name];
-
-    chain.evolves_to.forEach((next) => {
-      names.push(...this.extractEvolutionNames(next));
-    });
-
-    return names;
   }
 
   private loadPokemonDetail(url: string): Observable<PokemonDetail> {
@@ -179,6 +160,23 @@ export class PokemonService {
       image: pokemon.sprites.front_default ?? '',
       artwork: pokemon.sprites.other['official-artwork'].front_default ?? ''
     };
+  }
+
+  private extractEvolutionNames(
+    chain: PokemonEvolutionChainResponse['chain']
+  ): string[] {
+    const names: string[] = [chain.species.name];
+
+    chain.evolves_to.forEach((next) => {
+      names.push(...this.extractEvolutionNames(next));
+    });
+
+    return names;
+  }
+
+  private getPokemonId(url: string): number {
+    const parts = url.split('/').filter(Boolean);
+    return Number(parts[parts.length - 1]);
   }
 
   private getSpanishDescription(species: PokemonSpeciesResponse): string {

@@ -1,3 +1,56 @@
-<h1>Mis Pokémon favoritos</h1>
+<main class="pokdx">
+  <header class="pokdx__header">
+    <div class="pokdx__title">
+      <h1>Mis favoritos ({{ favoriteCount }})</h1>
+    </div>
+    <a class="pokemon-detail__back" routerLink="/">
+      ‹ Pokedex
+    </a>
+  </header>
 
-<a routerLink="/">Volver a la Pokédex</a>
+  <section class="pokdx__content favoritos__content">
+  <article
+    class="favoritos__card"
+    *ngFor="let poke of favoritePokemon">
+
+    <a
+      class="favoritos__pokemon"
+      [routerLink]="['/pokemon', poke.id]">
+
+      <img
+        class="favoritos__image"
+        [src]="poke.image"
+        [alt]="poke.name">
+
+      <div class="favoritos__data">
+        <p class="pokdx__number">
+          #{{ poke.id | number: '3.0-0' }}
+        </p>
+
+        <h2 class="pokdx__name">
+          {{ poke.name | titlecase }}
+        </h2>
+
+        <div class="favoritos__types">
+          <span
+            *ngFor="let type of poke.types"
+            class="pokdx__type"
+            [ngClass]="'pokdx__type--' + type">
+            {{ type }}
+          </span>
+        </div>
+      </div>
+    </a>
+
+    <button
+      type="button"
+      class="favoritos__remove"
+      (click)="removeFavorite(poke.id)">
+      Quitar X
+    </button>
+  </article>
+</section>
+    <p *ngIf="favoritePokemon.length === 0">
+        No tienes Pokémon favoritos.
+    </p>
+</main>

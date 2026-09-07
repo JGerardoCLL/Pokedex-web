@@ -88,7 +88,12 @@ src/
 	de tipos y estadísticas en español.
 - Añadir una estrategia de caché para reducir peticiones repetidas a PokeAPI.
 
+## Pantalla Principal
 ![alt text](image.png)
+
+## Pantalla de Detalles
 ![alt text](image-1.png)
+
+## Pantalla de Favoritos
 ![alt text](image-2.png)
 

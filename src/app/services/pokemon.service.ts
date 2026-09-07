@@ -5,7 +5,10 @@ import {
   Pokemon,
   PokemonPage,
   PokemonDetail,
-  PokemonListResponse
+  PokemonListResponse,
+  PokemonApiResponse,
+  PokemonSpeciesResponse,
+  PokemonTypeResponse
 } from '../models/pokemon.model';
 
 @Injectable({
@@ -28,9 +31,7 @@ export class PokemonService {
       ),
       types: forkJoin(
         this.pokemonTypes.map((type) =>
-          this.http.get<{
-            pokemon: { pokemon: { name: string; url: string } }[]
-          }>(`${this.apiUrl}/type/${type}`)
+          this.http.get<PokemonTypeResponse>(`${this.apiUrl}/type/${type}`)
         )
       )
     }).pipe(
@@ -93,11 +94,11 @@ export class PokemonService {
 
   getPokemonById(id: number): Observable<PokemonDetail> {
     return this.http
-      .get<any>(`${this.apiUrl}/pokemon/${id}`)
+      .get<PokemonApiResponse>(`${this.apiUrl}/pokemon/${id}`)
       .pipe(
         switchMap((pokemon) =>
           forkJoin({
-            species: this.http.get<any>(
+            species: this.http.get<PokemonSpeciesResponse>(
               `${this.apiUrl}/pokemon-species/${id}`
             ),
             pokemon: of(pokemon)
@@ -109,31 +110,30 @@ export class PokemonService {
           height: pokemon.height,
           weight: pokemon.weight,
           types: pokemon.types.map(
-            (item: { type: { name: string } }) => item.type.name
+            (item) => item.type.name
           ),
           abilities: pokemon.abilities.map(
-            (item: { ability: { name: string }; is_hidden: boolean }) => ({
+            (item) => ({
               name: item.ability.name,
               isHidden: item.is_hidden
             })
           ),
           description: this.getSpanishDescription(species),
           stats: pokemon.stats.map(
-            (item: { base_stat: number; stat: { name: string } }) => ({
+            (item) => ({
               name: item.stat.name,
               baseStat: item.base_stat
             })
           ),
-          image: pokemon.sprites.front_default,
-          artwork: pokemon.sprites.other['official-artwork'].front_default
+          image: pokemon.sprites.front_default ?? '',
+          artwork: pokemon.sprites.other['official-artwork'].front_default ?? ''
         }))
       );
   }
 
-  private getSpanishDescription(species: any): string {
+  private getSpanishDescription(species: PokemonSpeciesResponse): string {
     const flavorTextEntry = species.flavor_text_entries.find(
-      (entry: { language: { name: string } }) =>
-        entry.language.name === 'es'
+      (entry) => entry.language.name === 'es'
     );
 
     return flavorTextEntry

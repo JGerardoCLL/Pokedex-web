@@ -13,8 +13,7 @@
 
 <main class="pokemon-detail" *ngIf="estado === 'ready' && pokemon as pokemon">
   <header class="pokemon__header">
-    <a class="pokemon-detail__back" routerLink="/"
-       [queryParams]="{ page: returnPage }">
+    <a class="pokemon-detail__back" routerLink="/">
       ‹ Volver
     </a>
 
@@ -88,20 +87,17 @@
     <nav class="pokemon-detail__navigation">
   <a
     *ngIf="pokemonId > 1"
-    [routerLink]="['/pokemon', pokemonId - 1]"
-    [queryParams]="{ page: returnPage }">
+    [routerLink]="['/pokemon', pokemonId - 1]">
     ‹ Anterior
   </a>
 
   <a
-    routerLink="/"
-    [queryParams]="{ page: returnPage }">
+    routerLink="/">
     Volver a la lista
   </a>
 
   <a
-    [routerLink]="['/pokemon', pokemonId + 1]"
-    [queryParams]="{ page: returnPage }">
+    [routerLink]="['/pokemon', pokemonId + 1]">
     Siguiente ›
   </a>
 </nav>

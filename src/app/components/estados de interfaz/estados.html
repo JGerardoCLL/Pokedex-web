@@ -1,0 +1,34 @@
+<section class="estado-vista" [ngSwitch]="estado">
+  <div *ngSwitchCase="'loading'" class="estado-vista__contenido">
+    <div class="estado-vista__spinner" aria-hidden="true"></div>
+    <p>Cargando información...</p>
+  </div>
+
+  <div *ngSwitchCase="'error'" class="estado-vista__contenido">
+    <h2>{{ 'No se pudo cargar la información.' }}</h2>
+
+    <button
+      *ngIf="mostrarReintentar"
+      type="button"
+      class="estado-vista__button"
+      (click)="reintentar.emit()">
+      Reintentar
+    </button>
+  </div>
+
+  <div *ngSwitchCase="'empty'" class="estado-vista__contenido">
+    <h2>{{ mensaje || 'No hay resultados.' }}</h2>
+  </div>
+
+  <div *ngSwitchCase="'not-found'" class="estado-vista__contenido">
+    <h2>Página no encontrada</h2>
+    <p>La ruta que buscas no existe.</p>
+
+    <a
+      *ngIf="mostrarVolver"
+      routerLink="/"
+      class="estado-vista__button">
+      Volver a la Pokédex
+    </a>
+  </div>
+</section>

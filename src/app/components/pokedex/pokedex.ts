@@ -5,11 +5,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PokemonService } from '../../services/pokemon.service';
 import { Pokemon, PokemonPage } from '../../models/pokemon.model';
 import { FavoritesService } from '../../services/favorites.service';
+import { EstadosComponent } from '../estados de interfaz/estados';
 
 @Component({
     selector: 'app-pokedex',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterLink],
+    imports: [CommonModule, FormsModule, RouterLink, EstadosComponent],
     templateUrl: './pokedex.html',
     styleUrl: './pokedex.css'
 })
@@ -21,6 +22,8 @@ export class PokedexComponent{
     pageSize = 20;
     pokemonPage?: PokemonPage;
     private hasLoaded = false;
+    estado: 'loading' | 'error' | 'ready' = 'loading';
+    mensajeEstado = '';
 
 
     constructor(
@@ -46,13 +49,19 @@ export class PokedexComponent{
     }
 
     loadPokemons(): void {
-    this.pokemonService.getPokemonIndex().subscribe({
+      this.estado = 'loading';
+      this.mensajeEstado = '';
+
+      this.pokemonService.getPokemonIndex().subscribe({
       next: (page) => {
         this.pokemonPage = page;
         this.hasLoaded = true;
+        this.estado = 'ready';
       },
       error: (error) => {
         console.error('Error al cargar los Pokémon:', error);
+        this.estado = 'error';
+        this.mensajeEstado = 'No se pudo conectar con la API. Revisa tu conexión.';
       }
     });
     }

@@ -29,7 +29,28 @@
       </select>
     </section>
 
-    <section class="pokdx__content">
+    <app-estados
+      *ngIf="estado === 'loading'"
+      estado="loading">
+    </app-estados>
+
+    <app-estados
+      *ngIf="estado === 'error'"
+      estado="error"
+      [mensaje]="mensajeEstado"
+      [mostrarReintentar]="true"
+      (reintentar)="loadPokemons()">
+    </app-estados>
+
+    <app-estados
+      *ngIf="estado === 'ready' && filteredPokemon.length === 0"
+      estado="empty"
+      mensaje="No encontramos ningun Pokémon con '{{ searchTerm }}'.">
+    </app-estados>
+
+    <section
+      *ngIf="estado === 'ready' && filteredPokemon.length > 0"
+      class="pokdx__content">
       <a
         class="pokdx__card"
         *ngFor="let poke of paginatedPokemon"
@@ -58,13 +79,9 @@
       </a>
     </section>
 
-    <p *ngIf="filteredPokemon.length === 0">
-      No se encontraron Pokémon.
-    </p>
-
     <nav
       class="pokdx__pagination"
-      *ngIf="totalPages > 1"
+      *ngIf="estado === 'ready' && totalPages > 1"
       aria-label="Paginación">
 
       <button

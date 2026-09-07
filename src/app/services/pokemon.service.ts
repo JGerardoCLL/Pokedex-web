@@ -8,7 +8,9 @@ import {
   PokemonListResponse,
   PokemonApiResponse,
   PokemonSpeciesResponse,
-  PokemonTypeResponse
+  PokemonTypeResponse,
+  PokemonTypeListResponse,
+  PokemonTypeSummary
 } from '../models/pokemon.model';
 
 @Injectable({
@@ -17,7 +19,7 @@ import {
 
 export class PokemonService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://pokeapi.co/api/v2/';
+  private readonly apiUrl = 'https://pokeapi.co/api/v2';
   private readonly pokemonTypes = [
     'normal', 'fire', 'water', 'electric', 'grass', 'ice',
     'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
@@ -92,43 +94,60 @@ export class PokemonService {
   return Number(parts[parts.length - 1]);
   }
 
-  getPokemonById(id: number): Observable<PokemonDetail> {
+  getPokemonTypes(): Observable<string[]> {
     return this.http
-      .get<PokemonApiResponse>(`${this.apiUrl}/pokemon/${id}`)
+      .get<PokemonTypeListResponse>(`${this.apiUrl}/type?limit=100&offset=0`)
+      .pipe(
+        map((response) => response.results.map((type: PokemonTypeSummary) => type.name))
+      );
+  }
+
+  getPokemonById(id: number): Observable<PokemonDetail> {
+    return this.loadPokemonDetail(`${this.apiUrl}/pokemon/${id}`);
+  }
+
+  getPokemonByName(name: string): Observable<PokemonDetail> {
+    return this.loadPokemonDetail(`${this.apiUrl}/pokemon/${name.toLowerCase()}`);
+  }
+
+  private loadPokemonDetail(url: string): Observable<PokemonDetail> {
+    return this.http
+      .get<PokemonApiResponse>(url)
       .pipe(
         switchMap((pokemon) =>
           forkJoin({
             species: this.http.get<PokemonSpeciesResponse>(
-              `${this.apiUrl}/pokemon-species/${id}`
+              `${this.apiUrl}/pokemon-species/${pokemon.id}`
             ),
             pokemon: of(pokemon)
           })
         ),
-        map(({ pokemon, species }) => ({
-          id: pokemon.id,
-          name: pokemon.name,
-          height: pokemon.height,
-          weight: pokemon.weight,
-          types: pokemon.types.map(
-            (item) => item.type.name
-          ),
-          abilities: pokemon.abilities.map(
-            (item) => ({
-              name: item.ability.name,
-              isHidden: item.is_hidden
-            })
-          ),
-          description: this.getSpanishDescription(species),
-          stats: pokemon.stats.map(
-            (item) => ({
-              name: item.stat.name,
-              baseStat: item.base_stat
-            })
-          ),
-          image: pokemon.sprites.front_default ?? '',
-          artwork: pokemon.sprites.other['official-artwork'].front_default ?? ''
-        }))
+        map(({ pokemon, species }) => this.mapPokemonDetail(pokemon, species))
       );
+  }
+
+  private mapPokemonDetail(
+    pokemon: PokemonApiResponse,
+    species: PokemonSpeciesResponse
+  ): PokemonDetail {
+    return {
+      id: pokemon.id,
+      name: pokemon.name,
+      height: pokemon.height,
+      weight: pokemon.weight,
+      types: pokemon.types.map((item) => item.type.name),
+      abilities: pokemon.abilities.map((item) => ({
+        name: item.ability.name,
+        isHidden: item.is_hidden
+      })),
+      description: this.getSpanishDescription(species),
+      stats: pokemon.stats.map((item) => ({
+        name: item.stat.name,
+        baseStat: item.base_stat
+      })),
+      image: pokemon.sprites.front_default ?? '',
+      artwork: pokemon.sprites.other['official-artwork'].front_default ?? ''
+    };
   }
 
   private getSpanishDescription(species: PokemonSpeciesResponse): string {

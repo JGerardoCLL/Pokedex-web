@@ -10,7 +10,8 @@ import {
   PokemonSpeciesResponse,
   PokemonTypeResponse,
   PokemonTypeListResponse,
-  PokemonTypeSummary
+  PokemonTypeSummary,
+  PokemonEvolutionChainResponse
 } from '../models/pokemon.model';
 
 @Injectable({
@@ -108,6 +109,36 @@ export class PokemonService {
 
   getPokemonByName(name: string): Observable<PokemonDetail> {
     return this.loadPokemonDetail(`${this.apiUrl}/pokemon/${name.toLowerCase()}`);
+  }
+
+  getPokemonEvolutionChain(id: number): Observable<string[]> {
+    return this.http
+      .get<PokemonSpeciesResponse>(`${this.apiUrl}/pokemon-species/${id}`)
+      .pipe(
+        switchMap((species) => {
+          if (!species.evolution_chain?.url) {
+            return of([]);
+          }
+
+          return this.http
+            .get<PokemonEvolutionChainResponse>(species.evolution_chain.url)
+            .pipe(
+              map((chain) => this.extractEvolutionNames(chain.chain))
+            );
+        })
+      );
+  }
+
+  private extractEvolutionNames(
+    chain: PokemonEvolutionChainResponse['chain']
+  ): string[] {
+    const names: string[] = [chain.species.name];
+
+    chain.evolves_to.forEach((next) => {
+      names.push(...this.extractEvolutionNames(next));
+    });
+
+    return names;
   }
 
   private loadPokemonDetail(url: string): Observable<PokemonDetail> {

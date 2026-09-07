@@ -110,3 +110,13 @@ export interface PokemonSpeciesResponse {
     url: string;
   };
 }
+
+export interface PokemonEvolutionChainResponse {
+  chain: {
+    species: {
+      name: string;
+      url: string;
+    };
+    evolves_to: PokemonEvolutionChainResponse['chain'][];
+  };
+}

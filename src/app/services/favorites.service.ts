@@ -20,6 +20,10 @@ export class FavoritesService {
     }
   }
 
+  getCount(): number {
+    return this.getIds().length;
+  }
+
   isFavorite(id: number): boolean {
     return this.getIds().includes(id);
   }

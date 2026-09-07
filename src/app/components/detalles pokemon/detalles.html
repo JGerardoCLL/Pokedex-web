@@ -1,4 +1,17 @@
-<main class="pokemon-detail" *ngIf="pokemon$ | async as pokemon">
+<app-estados
+  *ngIf="estado === 'loading'"
+  estado="loading">
+</app-estados>
+
+<app-estados
+  *ngIf="estado === 'error'"
+  estado="error"
+  [mensaje]="mensajeEstado"
+  [mostrarReintentar]="true"
+  (reintentar)="loadPokemon()">
+</app-estados>
+
+<main class="pokemon-detail" *ngIf="estado === 'ready' && pokemon as pokemon">
   <header class="pokemon__header">
     <a class="pokemon-detail__back" routerLink="/"
        [queryParams]="{ page: returnPage }">

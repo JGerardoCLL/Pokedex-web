@@ -1,30 +1,41 @@
 .pokdx {
-  background-color: #ffffff;
+  background-color: var(--paper);
 }
 
 .pokdx__title {
   color: #ffffff;
-  font-size: 1.8rem;
-  font-weight: 800;
+  font-family: var(--font-head);
+  font-size: 1.4rem;
+  font-weight: 400;
   text-align: left;
+  letter-spacing: 1px;
   padding-left: 20px;
 }
 
 .pokdx__header {
-  background-color: #b92a2a;
+  background-color: var(--red);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 64px;
+  border-bottom: 4px solid var(--line);
 }
 
 .pokdx__button {
-  background-color: #ffffff;
-  border: none;
-  color: #000000;
-  cursor: pointer;
-  margin: 25px;
+  background-color: var(--card);
+  border: 2px solid var(--line);
+  color: var(--ink);
+  font-family: var(--font-head);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
+  cursor: pointer;
+  margin: 18px;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+
+.pokdx__button:hover {
+  background-color: var(--yellow);
 }
 
 .pokdx__filters {
@@ -33,20 +44,22 @@
   gap: 12px;
   align-items: center;
   width: 100%;
-  padding: 12px 6px;
+  padding: 14px 6px;
   box-sizing: border-box;
 }
 
 .pokdx__search,
 .pokdx__type-select {
-  height: 36px;
+  height: 40px;
   min-width: 0;
   box-sizing: border-box;
-  border: 1px solid #c8cdd5;
-  background-color: #f5f6f8;
-  color: #59616d;
-  font-size: 14px;
-  padding: 6px 10px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background-color: var(--card);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 6px 12px;
   outline: none;
 }
 
@@ -59,29 +72,38 @@
   cursor: pointer;
 }
 
+.pokdx__search::placeholder {
+  color: var(--ink-soft);
+}
+
 .pokdx__search:focus,
 .pokdx__type-select:focus {
-  border-color: #8d98a5;
+  border-color: var(--blue);
+  background-color: #ffffff;
 }
 
 .pokdx__content {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  padding: 1.5rem;
+  gap: 14px;
+  padding: 1.25rem;
 }
 
 .pokdx__card {
   display: block;
   min-width: 0;
-  padding: 16px;
-  border: 1px solid #e1e5eb;
-  border-radius: 8px;
-  background-color: #ffffff;
+  padding: 16px 12px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background-color: var(--card);
   text-align: center;
-  box-shadow: 0 2px 8px rgb(31 41 55 / 8%);
   color: inherit;
   text-decoration: none;
+}
+
+.pokdx__card:hover {
+  border-color: var(--red);
+  background-color: #ffffff;
 }
 
 .pokdx__image {
@@ -90,110 +112,27 @@
   max-width: 150px;
   aspect-ratio: 1;
   object-fit: contain;
-  margin: 0 auto 8px;
-  border: 1px solid #525050;
-  border-radius: 50%;
+  margin: 0 auto 10px;
+  padding: 8px;
+  background-color: #f7f2e4;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
 }
 
 .pokdx__number {
   margin: 0 0 4px;
-  color: #8a94a3;
+  color: var(--ink-soft);
   font-size: 0.85rem;
   font-weight: 700;
 }
 
 .pokdx__name {
   margin: 0 0 10px;
-  color: #263238;
-  font-size: 1.1rem;
-}
-
-.pokdx__type {
-  display: inline-block;
-  min-width: 72px;
-  padding: 4px 10px;
-  margin: 2px;
-  border-radius: 999px;
-  color: #ffffff;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.pokdx__type--grass {
-  background-color: #62b957;
-}
-
-.pokdx__type--fire {
-  background-color: #f08030;
-}
-
-.pokdx__type--water {
-  background-color: #6890f0;
-}
-
-.pokdx__type--bug {
-  background-color: #a8b820;
-}
-
-.pokdx__type--poison {
-  background-color: #a040a0;
-}
-
-.pokdx__type--flying {
-  background-color: #a890f0;
-}
-
-.pokdx__type--normal {
-  background-color: #a8a878;
-}
-
-.pokdx__type--electric {
-  background-color: #f8d030;
-  color: #463b00;
-}
-
-.pokdx__type--ground {
-  background-color: #e0c068;
-  color: #463b00;
-}
-
-.pokdx__type--rock {
-  background-color: #b8a038;
-}
-
-.pokdx__type--steel {
-  background-color: #b8b8d0;
-  color: #263238;
-}
-
-.pokdx__type--ice {
-  background-color: #98d8d8;
-  color: #163b3b;
-}
-
-.pokdx__type--fighting {
-  background-color: #c03028;
-}
-
-.pokdx__type--psychic {
-  background-color: #f85888;
-}
-
-.pokdx__type--ghost {
-  background-color: #705898;
-}
-
-.pokdx__type--dragon {
-  background-color: #7038f8;
-}
-
-.pokdx__type--dark {
-  background-color: #705848;
-}
-
-.pokdx__type--fairy {
-  background-color: #ee99ac;
-  color: #4a1f2a;
+  color: var(--ink);
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  font-weight: 400;
+  text-transform: uppercase;
 }
 
 .pokdx__pagination {
@@ -204,8 +143,32 @@
   padding: 1.5rem;
 }
 
+.pokdx__pagination span {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+}
+
 .pokdx__pagination button {
-  padding: 0.6rem;
+  padding: 9px 14px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background-color: var(--card);
+  color: var(--ink);
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.pokdx__pagination button:hover:not(:disabled) {
+  background-color: var(--yellow);
+}
+
+.pokdx__pagination button:disabled {
+  color: var(--ink-soft);
+  background-color: #e5ddc8;
+  cursor: default;
+  opacity: 0.7;
 }
 
 @media (max-width: 380px) {
@@ -220,7 +183,13 @@
     padding: 1rem;
   }
 
-  .pokdx__card {
-    padding: 10px;
+  .pokdx__title {
+    font-size: 1.1rem;
+    padding-left: 12px;
+  }
+
+  .pokdx__button {
+    margin: 14px;
+    font-size: 0.9rem;
   }
 }
